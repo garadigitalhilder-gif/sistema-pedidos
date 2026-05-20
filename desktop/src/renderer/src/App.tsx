@@ -7,15 +7,18 @@ import logo from './assets/logo.png';
 function App(): React.JSX.Element {
   const [activeTab, setActiveTab] = useState<'kanban' | 'clientes' | 'guias'>('kanban');
   const [serverIp, setServerIp] = useState(() => {
-    const savedUrl = localStorage.getItem('API_BASE_URL') || '';
-    const match = savedUrl.match(/http:\/\/([^:]+)/);
-    return match ? match[1] : 'master-pedidos';
+    return localStorage.getItem('API_BASE_URL') || '';
   });
   const [showConfig, setShowConfig] = useState(false);
 
   const handleSaveIp = (): void => {
-    if (serverIp.trim()) {
-      localStorage.setItem('API_BASE_URL', `http://${serverIp.trim()}:3000/api`);
+    const value = serverIp.trim();
+    if (value) {
+      if (value.startsWith('http://') || value.startsWith('https://')) {
+        localStorage.setItem('API_BASE_URL', value);
+      } else {
+        localStorage.setItem('API_BASE_URL', `http://${value}:3000/api`);
+      }
       alert('Configuración de conexión guardada con éxito.');
       window.location.reload();
     } else {
@@ -101,11 +104,11 @@ function App(): React.JSX.Element {
 
           {showConfig && (
             <div style={{ width: '100%', marginTop: '6px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
-              <label style={{ fontSize: '10px', color: '#cbd5e1' }}>IP del Servidor Master:</label>
+              <label style={{ fontSize: '10px', color: '#cbd5e1' }}>IP o URL del Servidor:</label>
               <div style={{ display: 'flex', gap: '4px' }}>
                 <input
                   type="text"
-                  placeholder="Ej: 100.80.90.120"
+                  placeholder="Ej: https://mi-api.onrender.com/api o 10.0.0.5"
                   value={serverIp}
                   onChange={(e) => setServerIp(e.target.value)}
                   style={{

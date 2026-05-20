@@ -12458,7 +12458,7 @@ const getApiUrl = () => {
   if (savedUrl && savedUrl.trim()) {
     return savedUrl.trim();
   }
-  return "http://127.0.0.1:3000/api";
+  return "http://master-pedidos:3000/api";
 };
 const BASE_URL = getApiUrl();
 const api = {
@@ -14842,14 +14842,17 @@ const logo = "" + new URL("logo-J4qwU-Cf.png", import.meta.url).href;
 function App() {
   const [activeTab, setActiveTab] = reactExports.useState("kanban");
   const [serverIp, setServerIp] = reactExports.useState(() => {
-    const savedUrl = localStorage.getItem("API_BASE_URL") || "";
-    const match = savedUrl.match(/http:\/\/([^:]+)/);
-    return match ? match[1] : "127.0.0.1";
+    return localStorage.getItem("API_BASE_URL") || "";
   });
   const [showConfig, setShowConfig] = reactExports.useState(false);
   const handleSaveIp = () => {
-    if (serverIp.trim()) {
-      localStorage.setItem("API_BASE_URL", `http://${serverIp.trim()}:3000/api`);
+    const value = serverIp.trim();
+    if (value) {
+      if (value.startsWith("http://") || value.startsWith("https://")) {
+        localStorage.setItem("API_BASE_URL", value);
+      } else {
+        localStorage.setItem("API_BASE_URL", `http://${value}:3000/api`);
+      }
       alert("Configuración de conexión guardada con éxito.");
       window.location.reload();
     } else {
@@ -14940,13 +14943,13 @@ function App() {
           )
         ] }),
         showConfig && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: { width: "100%", marginTop: "6px", display: "flex", flexDirection: "column", gap: "6px" }, children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("label", { style: { fontSize: "10px", color: "#cbd5e1" }, children: "IP del Servidor Master:" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("label", { style: { fontSize: "10px", color: "#cbd5e1" }, children: "IP o URL del Servidor:" }),
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: { display: "flex", gap: "4px" }, children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx(
               "input",
               {
                 type: "text",
-                placeholder: "Ej: 100.80.90.120",
+                placeholder: "Ej: https://mi-api.onrender.com/api o 10.0.0.5",
                 value: serverIp,
                 onChange: (e) => setServerIp(e.target.value),
                 style: {
