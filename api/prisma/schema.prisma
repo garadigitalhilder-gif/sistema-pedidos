@@ -1,0 +1,53 @@
+datasource db {
+  provider = "mysql"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Cliente {
+  id           Int       @id @default(autoincrement()) @map("Id")
+  nombre       String    @map("Nombre")
+  apellido     String    @map("Apellido")
+  cedula       String    @unique @map("Cedula")
+  telefono     String    @map("Telefono")
+  direccion    String    @map("Direccion")
+  barrio       String    @map("Barrio")
+  correo       String    @map("Correo")
+  ciudad       String    @map("Ciudad")
+  departamento String    @map("Departamento")
+  createdAt    DateTime  @default(now()) @map("CreatedAt")
+  updatedAt    DateTime? @updatedAt @map("UpdatedAt")
+  deletedAt    DateTime? @map("DeletedAt") // Soft delete
+  pedidos      Pedido[]
+
+  @@map("clientes")
+}
+
+model Pedido {
+  id               Int       @id @default(autoincrement()) @map("Id")
+  clienteId        Int       @map("ClienteId")
+  cliente          Cliente   @relation(fields: [clienteId], references: [id])
+  descripcion      String    @map("Descripcion") @db.VarChar(500)
+  fechaEntrega     DateTime  @map("FechaProgramada")
+  tipoProgramacion Int       @default(0) @map("TipoProgramacion")
+  estado           Int       @default(0) @map("Estado") // 0=PENDIENTE, 1=LISTO, 2=ENTREGADO
+  generadoEnPdf    Boolean   @default(false) @map("GeneradoEnPdf")
+  createdAt        DateTime  @default(now()) @map("FechaCreacion")
+  updatedAt        DateTime? @updatedAt @map("UpdatedAt")
+  deletedAt        DateTime? @map("DeletedAt") // Soft delete
+
+  @@map("pedidos")
+}
+
+model ConfiguracionRemitente {
+  id           Int    @id @default(autoincrement()) @map("Id")
+  nombre       String @map("Nombre")
+  cedula       String @map("Cedula")
+  telefono     String @map("Telefono")
+  direccion    String @map("Direccion")
+  ciudadOrigen String @map("CiudadOrigen")
+
+  @@map("configuracionesremitente")
+}

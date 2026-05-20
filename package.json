@@ -1,0 +1,14 @@
+{
+  "name": "sistema-pedidos-root",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "api": "npm --prefix api run dev",
+    "desktop": "npm --prefix desktop run dev",
+    "dev": "concurrently \"npm run api\" \"npm run desktop\"",
+    "install:all": "npm install --prefix api && npm install --prefix desktop"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}
