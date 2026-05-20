@@ -6,72 +6,6 @@ import logo from './assets/logo.png';
 
 function App(): React.JSX.Element {
   const [activeTab, setActiveTab] = useState<'kanban' | 'clientes' | 'guias'>('kanban');
-  const [serverIp, setServerIp] = useState(() => {
-    return localStorage.getItem('API_BASE_URL') || '';
-  });
-  const [showConfig, setShowConfig] = useState(false);
-
-  const sanitizeUrl = (input: string): string => {
-    let cleaned = input.trim();
-    // Eliminar comillas simples, dobles, invertidas y sus formas codificadas (%60, %27, %22)
-    cleaned = cleaned.replace(/[`'"]/g, '');
-    cleaned = cleaned.replace(/%(60|27|22)/gi, '');
-    // Eliminar barras diagonales al final
-    cleaned = cleaned.replace(/\/+$/, '');
-    cleaned = cleaned.trim();
-
-    if (!cleaned) return '';
-
-    const isHttpOrHttps = cleaned.startsWith('http://') || cleaned.startsWith('https://');
-    const isCloudDomain = cleaned.includes('onrender.com') || 
-                          cleaned.includes('supabase') || 
-                          cleaned.includes('.com') || 
-                          cleaned.includes('.net') || 
-                          cleaned.includes('.org') || 
-                          cleaned.includes('.co');
-
-    if (isHttpOrHttps) {
-      if (!cleaned.endsWith('/api')) {
-        cleaned = `${cleaned}/api`;
-      }
-      return cleaned;
-    } else {
-      if (isCloudDomain) {
-        cleaned = `https://${cleaned}`;
-        if (!cleaned.endsWith('/api')) {
-          cleaned = `${cleaned}/api`;
-        }
-        return cleaned;
-      } else {
-        // IP o host local (ej. 192.168.1.50 o master-pedidos)
-        if (cleaned.includes(':')) {
-          return `http://${cleaned}/api`;
-        } else {
-          return `http://${cleaned}:3000/api`;
-        }
-      }
-    }
-  };
-
-  const handleSaveIp = (): void => {
-    const rawValue = serverIp.trim();
-    if (rawValue) {
-      const sanitized = sanitizeUrl(rawValue);
-      if (sanitized) {
-        localStorage.setItem('API_BASE_URL', sanitized);
-        alert(`Configuración guardada con éxito:\n${sanitized}`);
-        window.location.reload();
-      } else {
-        localStorage.removeItem('API_BASE_URL');
-        alert('Configuración restablecida por defecto.');
-        window.location.reload();
-      }
-    } else {
-      localStorage.removeItem('API_BASE_URL');
-      alert('Configuración restablecida por defecto.');
-      window.location.reload();
-    }
-  };
 
   return (
     <div className="app-container">
@@ -126,65 +60,8 @@ function App(): React.JSX.Element {
           </div>
         </nav>
         
-        <div className="sidebar-footer" style={{ display: 'flex', flexDirection: 'column', gap: '8px', borderTop: '1px solid #3b232c', paddingTop: '12px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
-            <span style={{ fontSize: '11px', color: '#8b6e79' }}>Escritorio v1.0.0</span>
-            <button 
-              onClick={() => setShowConfig(!showConfig)}
-              style={{
-                background: 'none',
-                border: 'none',
-                color: '#d81b60',
-                cursor: 'pointer',
-                fontSize: '11px',
-                padding: 0,
-                display: 'flex',
-                alignItems: 'center',
-                gap: '4px'
-              }}
-            >
-              ⚙️ Conexión
-            </button>
-          </div>
-
-          {showConfig && (
-            <div style={{ width: '100%', marginTop: '6px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
-              <label style={{ fontSize: '10px', color: '#cbd5e1' }}>IP o URL del Servidor:</label>
-              <div style={{ display: 'flex', gap: '4px' }}>
-                <input
-                  type="text"
-                  placeholder="Ej: https://mi-api.onrender.com/api o 10.0.0.5"
-                  value={serverIp}
-                  onChange={(e) => setServerIp(e.target.value)}
-                  style={{
-                    backgroundColor: '#160e11',
-                    border: '1px solid #3b232c',
-                    color: '#ffffff',
-                    fontSize: '11px',
-                    padding: '4px 6px',
-                    borderRadius: '4px',
-                    flexGrow: 1,
-                    minWidth: 0
-                  }}
-                />
-                <button
-                  onClick={handleSaveIp}
-                  style={{
-                    backgroundColor: '#d81b60',
-                    border: 'none',
-                    borderRadius: '4px',
-                    color: '#ffffff',
-                    fontSize: '11px',
-                    padding: '4px 8px',
-                    cursor: 'pointer',
-                    fontWeight: 'bold'
-                  }}
-                >
-                  Ok
-                </button>
-              </div>
-            </div>
-          )}
+        <div className="sidebar-footer" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', borderTop: '1px solid #3b232c', paddingTop: '12px' }}>
+          <span style={{ fontSize: '11px', color: '#8b6e79' }}>Escritorio v1.0.0</span>
         </div>
       </aside>
 
