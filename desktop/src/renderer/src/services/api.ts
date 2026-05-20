@@ -1,10 +1,14 @@
 const getApiUrl = (): string => {
   const savedUrl = localStorage.getItem('API_BASE_URL');
-  if (savedUrl && savedUrl.trim()) {
-    return savedUrl.trim();
+  if (savedUrl) {
+    if (savedUrl.includes('sistema-pedidos-api.onrender.com')) {
+      localStorage.removeItem('API_BASE_URL');
+    } else if (savedUrl.trim()) {
+      return savedUrl.trim();
+    }
   }
   // Por defecto, intentar conectar al servidor de producción en la nube (Render)
-  return 'https://sistema-pedidos-api.onrender.com/api';
+  return 'https://sistema-pedidos-tjt6.onrender.com/api';
 };
 
 const BASE_URL = getApiUrl();

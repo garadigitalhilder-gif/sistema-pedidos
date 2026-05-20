@@ -7,7 +7,11 @@ import App from './App'
 const bootstrap = async (): Promise<void> => {
   // Solo redirigir si se carga desde el protocolo local file:// (empaquetado en Electron)
   if (window.location.protocol === 'file:') {
-    const savedUrl = localStorage.getItem('API_BASE_URL')
+    let savedUrl = localStorage.getItem('API_BASE_URL')
+    if (savedUrl && savedUrl.includes('sistema-pedidos-api.onrender.com')) {
+      localStorage.removeItem('API_BASE_URL')
+      savedUrl = null
+    }
     if (savedUrl) {
       // Extrae "http://100.95.26.124:3000" quitando "/api"
       const serverBase = savedUrl.replace('/api', '')
