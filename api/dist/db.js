@@ -13,7 +13,10 @@ const dbUrl = process.env.DATABASE_URL;
 if (!dbUrl) {
     throw new Error('La variable de entorno DATABASE_URL es requerida en .env');
 }
-const pool = new pg_1.Pool({ connectionString: dbUrl });
+const pool = new pg_1.Pool({
+    connectionString: dbUrl,
+    ssl: { rejectUnauthorized: false },
+});
 const adapter = new adapter_pg_1.PrismaPg(pool);
 const prisma = new client_1.PrismaClient({
     adapter,
