@@ -6,6 +6,7 @@ import clientesRouter from './routes/clientes';
 import pedidosRouter from './routes/pedidos';
 import guiasRouter from './routes/guias';
 import remitenteRouter from './routes/remitente';
+import { inicializarCronLimpieza } from './cronLimpieza';
 
 // Cargar variables de entorno
 dotenv.config();
@@ -36,17 +37,17 @@ app.get('/health', (req, res) => {
   });
 });
 
-// Comodín para SPA: cualquier ruta que no sea API sirve el index.html
-app.get('*', (req, res, next) => {
-  if (req.path.startsWith('/api') || req.path.startsWith('/health')) {
-    return next();
+// Comodín para SPA: cualquier ruta GET que no sea API sirve el index.html
+app.use((req, res, next) => {
+  if (req.method === 'GET' && !req.path.startsWith('/api') && !req.path.startsWith('/health')) {
+    res.sendFile(path.join(staticPath, 'index.html'), (err) => {
+      if (err) {
+        next();
+      }
+    });
+  } else {
+    next();
   }
-  res.sendFile(path.join(staticPath, 'index.html'), (err) => {
-    if (err) {
-      // Si no existe el archivo (desarrollo o no compilado), continuar
-      next();
-    }
-  });
 });
 
 // Middleware global de manejo de errores
@@ -58,6 +59,8 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
 });
 
 // Arrancar servidor
-app.listen(PORT, () => {
-  console.log(`[Servidor] API REST escuchando en http://localhost:${PORT}`);
+app.listen(Number(PORT), '0.0.0.0', () => {
+  console.log(`[Servidor] API REST escuchando en todas las interfaces en el puerto ${PORT}`);
+  // Iniciar la tarea en segundo plano de limpieza
+  inicializarCronLimpieza();
 });

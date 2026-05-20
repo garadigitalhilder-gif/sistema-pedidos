@@ -9,7 +9,7 @@ function App(): React.JSX.Element {
   const [serverIp, setServerIp] = useState(() => {
     const savedUrl = localStorage.getItem('API_BASE_URL') || '';
     const match = savedUrl.match(/http:\/\/([^:]+)/);
-    return match ? match[1] : '127.0.0.1';
+    return match ? match[1] : 'master-pedidos';
   });
   const [showConfig, setShowConfig] = useState(false);
 

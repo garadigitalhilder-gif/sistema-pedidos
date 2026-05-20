@@ -44,7 +44,10 @@ router.get('/', async (req, res, next) => {
 router.get('/semana', async (req, res, next) => {
     try {
         const fechaParam = req.query.fecha;
-        const date = fechaParam ? new Date(fechaParam) : new Date();
+        // IMPORTANTE: new Date("YYYY-MM-DD") se interpreta como medianoche UTC, lo cual en
+        // zonas horarias negativas (ej: Colombia UTC-5) retrocede al día anterior local.
+        // Forzamos parseo como mediodía local para evitar desplazamiento de día.
+        const date = fechaParam ? new Date(fechaParam + 'T12:00:00') : new Date();
         if (isNaN(date.getTime())) {
             res.status(400).json({ error: 'Fecha de consulta inválida' });
             return;

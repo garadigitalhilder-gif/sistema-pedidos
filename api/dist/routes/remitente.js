@@ -13,7 +13,7 @@ router.get('/', async (req, res, next) => {
         if (!config) {
             config = {
                 id: 1,
-                nombre: 'SISTEMA PEDIDOS FERACOBA',
+                nombre: 'DETALLES PARA RECORDAR',
                 cedula: '12345678-9',
                 telefono: '300 123 4567',
                 direccion: 'Av. Principal 456',

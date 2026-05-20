@@ -146,7 +146,7 @@ router.post('/generar', async (req, res, next) => {
         // Obtener datos del remitente desde base de datos (con fallback)
         const configRemitente = await db_1.default.configuracionRemitente.findFirst();
         const remitente = {
-            nombre: configRemitente?.nombre || "SISTEMA PEDIDOS FERACOBA",
+            nombre: configRemitente?.nombre || "DETALLES PARA RECORDAR",
             direccion: configRemitente?.direccion || "Av. Principal 456",
             ciudad: configRemitente?.ciudadOrigen || "Medellín",
             telefono: configRemitente?.telefono || "300 123 4567",
@@ -189,11 +189,7 @@ router.post('/generar', async (req, res, next) => {
               </div>
 
               <!-- Footer de la Guía -->
-              <div class="footer-guide">
-                <div>
-                  <strong>Pedido:</strong> #${pedido.id}<br/>
-                  <strong>Entrega:</strong> ${new Date(pedido.fechaEntrega).toLocaleDateString('es-CO')}
-                </div>
+              <div class="footer-guide" style="justify-content: flex-end;">
                 <div class="barcode-placeholder">PED-${pedido.id}</div>
               </div>
             </div>
@@ -213,8 +209,9 @@ router.post('/generar', async (req, res, next) => {
     </body>
     </html>
     `;
-        // Generar PDF con Puppeteer
+        // Generar PDF con Puppeteer (usando Microsoft Edge instalado localmente)
         const browser = await puppeteer_1.default.launch({
+            executablePath: 'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe',
             args: ['--no-sandbox', '--disable-setuid-sandbox'],
             headless: true,
         });

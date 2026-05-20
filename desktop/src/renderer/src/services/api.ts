@@ -3,7 +3,8 @@ const getApiUrl = (): string => {
   if (savedUrl && savedUrl.trim()) {
     return savedUrl.trim();
   }
-  return 'http://127.0.0.1:3000/api';
+  // Por defecto, intentar conectar a "master-pedidos" en la red VPN de Tailscale
+  return 'http://master-pedidos:3000/api';
 };
 
 const BASE_URL = getApiUrl();
