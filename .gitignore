@@ -41,3 +41,4 @@ gsearch/
 ## Rider
 .idea/
 *.sln.iml
+api/.puppeteer-cache/
