@@ -6,7 +6,55 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const db_1 = __importDefault(require("../db"));
 const puppeteer_1 = __importDefault(require("puppeteer"));
+const fs_1 = __importDefault(require("fs"));
+const path_1 = __importDefault(require("path"));
 const router = (0, express_1.Router)();
+// Helper para encontrar de manera dinámica el ejecutable de un navegador compatible (Edge, Chrome, Brave, etc.)
+function getBrowserPath() {
+    // 1. Priorizar variable de entorno
+    if (process.env.PUPPETEER_EXECUTABLE_PATH) {
+        return process.env.PUPPETEER_EXECUTABLE_PATH;
+    }
+    // 2. En Linux/Render/macOS, buscar navegadores del sistema o usar el empaquetado de Puppeteer
+    if (process.platform !== 'win32') {
+        const linuxPaths = [
+            '/usr/bin/google-chrome-stable',
+            '/usr/bin/google-chrome',
+            '/usr/bin/chromium-browser',
+            '/usr/bin/chromium'
+        ];
+        for (const p of linuxPaths) {
+            if (fs_1.default.existsSync(p)) {
+                return p;
+            }
+        }
+        return undefined; // Permite a Puppeteer intentar usar su Chromium integrado
+    }
+    // 3. En Windows, probar rutas típicas de Edge, Chrome y Brave
+    const userProfile = process.env.USERPROFILE || '';
+    const localAppData = process.env.LOCALAPPDATA || path_1.default.join(userProfile, 'AppData', 'Local');
+    const programFiles = process.env.ProgramFiles || 'C:\\Program Files';
+    const programFilesX86 = process.env['ProgramFiles(x86)'] || 'C:\\Program Files (x86)';
+    const commonWindowsPaths = [
+        // Microsoft Edge (x64 y x86)
+        path_1.default.join(programFiles, 'Microsoft', 'Edge', 'Application', 'msedge.exe'),
+        path_1.default.join(programFilesX86, 'Microsoft', 'Edge', 'Application', 'msedge.exe'),
+        // Google Chrome
+        path_1.default.join(programFiles, 'Google', 'Chrome', 'Application', 'chrome.exe'),
+        path_1.default.join(programFilesX86, 'Google', 'Chrome', 'Application', 'chrome.exe'),
+        path_1.default.join(localAppData, 'Google', 'Chrome', 'Application', 'chrome.exe'),
+        // Brave Browser
+        path_1.default.join(programFiles, 'BraveSoftware', 'Brave-Browser', 'Application', 'brave.exe'),
+        path_1.default.join(programFilesX86, 'BraveSoftware', 'Brave-Browser', 'Application', 'brave.exe'),
+        path_1.default.join(localAppData, 'BraveSoftware', 'Brave-Browser', 'Application', 'brave.exe')
+    ];
+    for (const p of commonWindowsPaths) {
+        if (fs_1.default.existsSync(p)) {
+            return p;
+        }
+    }
+    return undefined;
+}
 // POST /api/guias/generar
 // Body: { pedidoIds: number[], guiasPorPagina?: 4 | 6 }
 router.post('/generar', async (req, res, next) => {
@@ -209,9 +257,11 @@ router.post('/generar', async (req, res, next) => {
     </body>
     </html>
     `;
-        // Generar PDF con Puppeteer (usando Microsoft Edge instalado localmente)
+        // Obtener ruta del navegador dinámica
+        const executablePath = getBrowserPath();
+        // Generar PDF con Puppeteer usando el navegador disponible o el integrado
         const browser = await puppeteer_1.default.launch({
-            executablePath: 'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe',
+            ...(executablePath ? { executablePath } : {}),
             args: ['--no-sandbox', '--disable-setuid-sandbox'],
             headless: true,
         });
