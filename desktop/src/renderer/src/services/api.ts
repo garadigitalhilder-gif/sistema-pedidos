@@ -1,4 +1,12 @@
-const BASE_URL = 'http://127.0.0.1:3000/api';
+const getApiUrl = (): string => {
+  const savedUrl = localStorage.getItem('API_BASE_URL');
+  if (savedUrl && savedUrl.trim()) {
+    return savedUrl.trim();
+  }
+  return 'http://127.0.0.1:3000/api';
+};
+
+const BASE_URL = getApiUrl();
 
 export interface Cliente {
   id: number;

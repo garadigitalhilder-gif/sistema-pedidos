@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import path from 'path';
 import clientesRouter from './routes/clientes';
 import pedidosRouter from './routes/pedidos';
 import guiasRouter from './routes/guias';
@@ -16,7 +17,11 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-// Registrar Rutas
+// Servir archivos estáticos del frontend compilado
+const staticPath = path.join(__dirname, '../public');
+app.use(express.static(staticPath));
+
+// Registrar Rutas de la API
 app.use('/api/clientes', clientesRouter);
 app.use('/api/pedidos', pedidosRouter);
 app.use('/api/guias', guiasRouter);
@@ -28,6 +33,19 @@ app.get('/health', (req, res) => {
     status: 'ok',
     message: 'Servidor de Pedidos ejecutándose correctamente',
     timestamp: new Date()
+  });
+});
+
+// Comodín para SPA: cualquier ruta que no sea API sirve el index.html
+app.get('*', (req, res, next) => {
+  if (req.path.startsWith('/api') || req.path.startsWith('/health')) {
+    return next();
+  }
+  res.sendFile(path.join(staticPath, 'index.html'), (err) => {
+    if (err) {
+      // Si no existe el archivo (desarrollo o no compilado), continuar
+      next();
+    }
   });
 });
 
