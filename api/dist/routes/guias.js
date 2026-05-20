@@ -104,10 +104,10 @@ router.post('/generar', async (req, res, next) => {
           width: 8.5in;
           height: 11in;
           box-sizing: border-box;
-          padding: 0.4in;
+          padding: 0.25in;
           display: grid;
           grid-template-columns: 1fr 1fr;
-          gap: 0.3in;
+          gap: 0.15in;
           page-break-after: always;
         }
         /* Para 6 guías por página */
@@ -121,38 +121,38 @@ router.post('/generar', async (req, res, next) => {
         .guide {
           border: 2px dashed #333;
           border-radius: 8px;
-          padding: 15px;
+          padding: 10px;
           display: flex;
           flex-direction: column;
           justify-content: space-between;
           box-sizing: border-box;
-          font-size: 11px;
-          line-height: 1.4;
+          font-size: 10px;
+          line-height: 1.3;
           background: #fafafa;
         }
         .header-title {
           font-weight: bold;
-          font-size: 13px;
+          font-size: 11px;
           border-bottom: 2px solid #333;
-          padding-bottom: 4px;
-          margin-bottom: 8px;
+          padding-bottom: 2px;
+          margin-bottom: 4px;
           text-align: center;
           text-transform: uppercase;
           letter-spacing: 0.5px;
         }
         .section {
-          margin-bottom: 8px;
+          margin-bottom: 4px;
         }
         .section-title {
           font-weight: bold;
-          font-size: 10px;
+          font-size: 9px;
           color: #666;
           text-transform: uppercase;
           border-bottom: 1px solid #ddd;
-          margin-bottom: 4px;
+          margin-bottom: 2px;
         }
         .field {
-          margin-bottom: 2px;
+          margin-bottom: 1px;
         }
         .field-label {
           font-weight: bold;
@@ -162,11 +162,11 @@ router.post('/generar', async (req, res, next) => {
           background: #eeeeee;
           border: 1px solid #ccc;
           border-radius: 4px;
-          padding: 6px;
-          font-size: 10px;
+          padding: 4px;
+          font-size: 9px;
           font-family: monospace;
           white-space: pre-wrap;
-          max-height: 50px;
+          max-height: 40px;
           overflow-y: hidden;
         }
         .footer-guide {
@@ -174,8 +174,8 @@ router.post('/generar', async (req, res, next) => {
           justify-content: space-between;
           align-items: center;
           border-top: 1px solid #333;
-          padding-top: 6px;
-          margin-top: 8px;
+          padding-top: 4px;
+          margin-top: 4px;
           font-size: 9px;
         }
         .barcode-placeholder {

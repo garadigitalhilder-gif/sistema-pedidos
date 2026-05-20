@@ -189,7 +189,10 @@ export default function KanbanPage(): React.JSX.Element {
       await api.createPedido({
         clienteId: parseInt(form.clienteId),
         descripcion: form.descripcion,
-        fechaEntrega: new Date(form.fechaEntrega).toISOString(),
+        fechaEntrega: (() => {
+          const [year, month, day] = form.fechaEntrega.split('-').map(Number);
+          return new Date(year, month - 1, day, 0, 0, 0, 0).toISOString();
+        })(),
         estado: form.estado,
       });
       setShowCreateModal(false);
@@ -282,7 +285,10 @@ export default function KanbanPage(): React.JSX.Element {
 
     try {
       await api.updatePedido(reschedulePedido.id, {
-        fechaEntrega: new Date(nuevaFecha).toISOString(),
+        fechaEntrega: (() => {
+          const [year, month, day] = nuevaFecha.split('-').map(Number);
+          return new Date(year, month - 1, day, 0, 0, 0, 0).toISOString();
+        })(),
       });
       setShowRescheduleModal(false);
       // Actualizar alertas del listado local
