@@ -1,0 +1,43 @@
+## Ignore Visual Studio temp files, build results, and database files
+## User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+## User-specific files (MonoDevelop/Xamarin Studio)
+*.userprefs
+
+## Mono auto-generated files
+mono_crash.*
+
+## Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Re]leases/
+x64/
+x86/
+[Aa]rm/
+[Aa]rm64/
+bsearch/
+gsearch/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+## Visual Studio 2015/2017/2019/2022 cache directory
+.vs/
+# Generated user files
+/html/
+
+## Backup and restore files from Migrations
+*.bak
+*.dat
+*.pkinfo
+
+## Rider
+.idea/
+*.sln.iml
