@@ -12458,7 +12458,7 @@ const getApiUrl = () => {
   if (savedUrl && savedUrl.trim()) {
     return savedUrl.trim();
   }
-  return "http://master-pedidos:3000/api";
+  return "https://sistema-pedidos-api.onrender.com/api";
 };
 const BASE_URL = getApiUrl();
 const api = {
@@ -14845,19 +14845,53 @@ function App() {
     return localStorage.getItem("API_BASE_URL") || "";
   });
   const [showConfig, setShowConfig] = reactExports.useState(false);
-  const handleSaveIp = () => {
-    const value = serverIp.trim();
-    if (value) {
-      if (value.startsWith("http://") || value.startsWith("https://")) {
-        localStorage.setItem("API_BASE_URL", value);
-      } else {
-        localStorage.setItem("API_BASE_URL", `http://${value}:3000/api`);
+  const sanitizeUrl = (input) => {
+    let cleaned = input.trim();
+    cleaned = cleaned.replace(/[`'"]/g, "");
+    cleaned = cleaned.replace(/%(60|27|22)/gi, "");
+    cleaned = cleaned.replace(/\/+$/, "");
+    cleaned = cleaned.trim();
+    if (!cleaned) return "";
+    const isHttpOrHttps = cleaned.startsWith("http://") || cleaned.startsWith("https://");
+    const isCloudDomain = cleaned.includes("onrender.com") || cleaned.includes("supabase") || cleaned.includes(".com") || cleaned.includes(".net") || cleaned.includes(".org") || cleaned.includes(".co");
+    if (isHttpOrHttps) {
+      if (!cleaned.endsWith("/api")) {
+        cleaned = `${cleaned}/api`;
       }
-      alert("Configuración de conexión guardada con éxito.");
-      window.location.reload();
+      return cleaned;
+    } else {
+      if (isCloudDomain) {
+        cleaned = `https://${cleaned}`;
+        if (!cleaned.endsWith("/api")) {
+          cleaned = `${cleaned}/api`;
+        }
+        return cleaned;
+      } else {
+        if (cleaned.includes(":")) {
+          return `http://${cleaned}/api`;
+        } else {
+          return `http://${cleaned}:3000/api`;
+        }
+      }
+    }
+  };
+  const handleSaveIp = () => {
+    const rawValue = serverIp.trim();
+    if (rawValue) {
+      const sanitized = sanitizeUrl(rawValue);
+      if (sanitized) {
+        localStorage.setItem("API_BASE_URL", sanitized);
+        alert(`Configuración guardada con éxito:
+${sanitized}`);
+        window.location.reload();
+      } else {
+        localStorage.removeItem("API_BASE_URL");
+        alert("Configuración restablecida por defecto.");
+        window.location.reload();
+      }
     } else {
       localStorage.removeItem("API_BASE_URL");
-      alert("Configuración restablecida por defecto (Localhost).");
+      alert("Configuración restablecida por defecto.");
       window.location.reload();
     }
   };

@@ -3,8 +3,8 @@ const getApiUrl = (): string => {
   if (savedUrl && savedUrl.trim()) {
     return savedUrl.trim();
   }
-  // Por defecto, intentar conectar a "master-pedidos" en la red VPN de Tailscale
-  return 'http://master-pedidos:3000/api';
+  // Por defecto, intentar conectar al servidor de producción en la nube (Render)
+  return 'https://sistema-pedidos-api.onrender.com/api';
 };
 
 const BASE_URL = getApiUrl();
