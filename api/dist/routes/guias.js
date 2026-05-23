@@ -121,7 +121,7 @@ router.post('/generar', async (req, res, next) => {
         .guide {
           border: 2px dashed #333;
           border-radius: 8px;
-          padding: 10px;
+          padding: 8px 10px;
           display: flex;
           flex-direction: column;
           justify-content: space-between;
@@ -141,7 +141,7 @@ router.post('/generar', async (req, res, next) => {
           letter-spacing: 0.5px;
         }
         .section {
-          margin-bottom: 4px;
+          margin-bottom: 3px;
         }
         .section-title {
           font-weight: bold;
@@ -195,6 +195,7 @@ router.post('/generar', async (req, res, next) => {
         const configRemitente = await db_1.default.configuracionRemitente.findFirst();
         const remitente = {
             nombre: configRemitente?.nombre || "DETALLES PARA RECORDAR",
+            cedula: configRemitente?.cedula || "12345678-9",
             direccion: configRemitente?.direccion || "Av. Principal 456",
             ciudad: configRemitente?.ciudadOrigen || "Medellín",
             telefono: configRemitente?.telefono || "300 123 4567",
@@ -213,6 +214,7 @@ router.post('/generar', async (req, res, next) => {
               <div class="section">
                 <div class="section-title">Remitente</div>
                 <div class="field"><span class="field-label">Nombre:</span> ${remitente.nombre}</div>
+                <div class="field"><span class="field-label">Cédula:</span> ${remitente.cedula}</div>
                 <div class="field"><span class="field-label">Origen:</span> ${remitente.ciudad}</div>
                 <div class="field"><span class="field-label">Tel:</span> ${remitente.telefono}</div>
               </div>
@@ -226,6 +228,7 @@ router.post('/generar', async (req, res, next) => {
                 <div class="field"><span class="field-label">Barrio:</span> ${c.barrio}</div>
                 <div class="field"><span class="field-label">Destino:</span> ${c.ciudad} - ${c.departamento}</div>
                 <div class="field"><span class="field-label">Tel:</span> ${c.telefono}</div>
+                <div class="field"><span class="field-label">Correo:</span> ${c.correo}</div>
               </div>
             </div>
 
